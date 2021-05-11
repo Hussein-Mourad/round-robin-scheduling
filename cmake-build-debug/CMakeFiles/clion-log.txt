@@ -1,0 +1,4 @@
+/home/hussein/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/211.7142.21/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/hussein/CLionProjects/round-robin-scheduling
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/hussein/CLionProjects/round-robin-scheduling/cmake-build-debug
