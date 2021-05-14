@@ -101,24 +101,6 @@ void destroy(Queue *q) {
     }
 }
 
-Process *getProcesses(FILE *f, int watch_time) {
-    char process_name[2];
-    int starting_time;
-    int remaining_time;
-    Process *processes = malloc(sizeof(Process) * watch_time);
-
-    int i = 0;
-    while (!feof(f)) {
-        // reads the processes
-        fscanf(f, "%s %d %d", process_name, &starting_time, &remaining_time);
-//        printf("%s %d %d", process_name, starting_time, remaining_time);
-        Process process = {process_name, starting_time, remaining_time};
-        processes[i++] = process;
-    }
-    return processes;
-}
-
-
 int getWatchTime(FILE *f) {
     int watch_time;
     char buffer[10];
@@ -135,11 +117,11 @@ void RoundRobin(char *filename) {
     Queue *queue = init();
     int watch_time = getWatchTime(f);
     Process *processes[watch_time];
-    char *s[watch_time];
     int number_of_processes = 0;
 
+    // reads processes into processes array
     while (!feof(f)) {
-        char process_name[10];
+        char process_name[256];
         int starting_time;
         int remaining_time;
         // reads the processes
@@ -147,7 +129,6 @@ void RoundRobin(char *filename) {
         Process *process = newProcess(process_name, starting_time, remaining_time);
         processes[number_of_processes++] = process;
     }
-
 
     for (int i = 0; i < watch_time; i++) {
         Process current_process;
@@ -159,21 +140,22 @@ void RoundRobin(char *filename) {
                 enqueue(queue, process);
             }
         }
-
+        // gets the next element in queue
         current_process = dequeue(queue);
 
-        if (current_process.name)
+        // reduce remaining time and print the process if the process is not null
+        if (current_process.name) {
             current_process.remaining_time--;
-
-        if (current_process.name == NULL)
-            printf("idle\t");
-        else
             printf("%s\t", current_process.name);
+        } else // if the process is null prints idle
+            printf("idle\t");
 
+        // if the process is not null and there is remaining time enqueue it
         if (current_process.remaining_time != 0 && current_process.name)
             enqueue(queue, current_process);
 
         printf("(%d-->%d) ", i, i + 1);
+        // if the process is finished prints aborts
         if (current_process.remaining_time == 0)
             printf("%s aborts", current_process.name);
 
@@ -188,32 +170,19 @@ void RoundRobin(char *filename) {
  *
  */
 int main() {
-//    char filename[261];
-//    puts("Enter file name or Ctrl+Z to exit:");
-//    puts("----------------------------------");
-//    while (fgets(filename, 260, stdin) != NULL) {
-//        filename[strlen(filename) - 1] = '\0';
-//        if (fopen(filename, "r"))
-//            RoundRobin(filename);
-//        else {
-//            puts("File Not Found!");
-//            puts("----------------------------------");
-//        }
-//        puts("Enter file name or Ctrl+Z to exit:");
-//        puts("----------------------------------");
-//    }
-    RoundRobin("test.txt");
-//
-//    Queue *q = init();
-//    Process p1 = {"test", 1, 2};
-//    enqueue(q, p1);
-//    printf("isEmpty: %d\n", isEmpty(q));
-//    Process p = dequeue(q);
-//    printf("%s %d %d\n", p.name, p.starting_time, p.remaining_time);
-//    printf("isEmpty: %d\n", isEmpty(q));
-//    Process test = dequeue(q);
-//    printf("%s %d %d\n", test.name, test.starting_time, test.remaining_time);
-
-
+    char filename[261];
+    puts("Enter file name or Ctrl+Z to exit:");
+    puts("----------------------------------");
+    while (fgets(filename, 260, stdin) != NULL) {
+        filename[strlen(filename) - 1] = '\0';
+        if (fopen(filename, "r"))
+            RoundRobin(filename);
+        else {
+            puts("File Not Found!");
+            puts("----------------------------------");
+        }
+        puts("Enter file name or Ctrl+Z to exit:");
+        puts("----------------------------------");
+    }
     return 0;
 }
