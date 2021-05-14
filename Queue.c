@@ -13,6 +13,16 @@ typedef struct {
     int starting_time;
     int remaining_time;
 } Process;
+
+Process *newProcess(char *name, int starting_time, int remaining_time) {
+    Process *p = malloc(sizeof(Process));
+    p->name = malloc(sizeof(char) * 256);
+    strcpy(p->name, name);
+    p->starting_time = starting_time;
+    p->remaining_time = remaining_time;
+    return p;
+}
+
 /*
  *
  */
@@ -72,8 +82,8 @@ Process dequeue(Queue *q) {
 /*
  *
  */
-void enqueue(Queue *q, Process x) {
-    Node *n = newNode(x);
+void enqueue(Queue *q, Process p) {
+    Node *n = newNode(p);
     if (q->head == NULL)
         q->head = q->tail = n;
     else {
@@ -91,27 +101,29 @@ void destroy(Queue *q) {
     }
 }
 
-Process *getProcesses(FILE *f, int watchTime) {
+Process *getProcesses(FILE *f, int watch_time) {
     char process_name[2];
     int starting_time;
     int remaining_time;
-    Process processes[watchTime];
+    Process *processes = malloc(sizeof(Process) * watch_time);
 
     int i = 0;
     while (!feof(f)) {
         // reads the processes
         fscanf(f, "%s %d %d", process_name, &starting_time, &remaining_time);
+//        printf("%s %d %d", process_name, starting_time, remaining_time);
         Process process = {process_name, starting_time, remaining_time};
         processes[i++] = process;
     }
     return processes;
 }
 
+
 int getWatchTime(FILE *f) {
     int watch_time;
     char buffer[10];
     // gets watching time slots
-    fscanf(f, "%s %s %s %s %d", buffer, buffer, buffer, buffer, &watch_time);
+    fscanf(f, "%s %s %s %s %d\n", buffer, buffer, buffer, buffer, &watch_time);
     return watch_time;
 }
 
@@ -122,18 +134,41 @@ void RoundRobin(char *filename) {
     FILE *f = fopen(filename, "r");
     Queue *queue = init();
     int watch_time = getWatchTime(f);
-    Process *processes = getProcesses(f, watch_time);
-    int number_of_processes = sizeof processes / sizeof processes[0];
+
+    Process *processes[watch_time];
+    char *s[watch_time];
+
+    int number_of_processes = 0;
+
+    while (!feof(f)) {
+        char process_name[10];
+        int starting_time;
+        int remaining_time;
+        // reads the processes
+        fscanf(f, "%s %d %d\n", process_name, &starting_time, &remaining_time);
+        Process *process = newProcess(process_name, starting_time, remaining_time);
+        processes[number_of_processes++] = process;
+    }
 
     for (int i = 0; i < watch_time; i++) {
-        Process process = processes[i % number_of_processes];
-        if (process.starting_time == i)
-            enqueue(queue, process);
-        Process current_process = dequeue(queue);
-        current_process.remaining_time = current_process.remaining_time - 1;
-        char *process_id = isEmpty(queue) ? "idle" : current_process.name;
-        char *message = current_process.remaining_time == 0 ? strcat(process_id, " aborts") : "";
-        printf("%s (%d-->%d) %s\n", process_id, i, i + 1, message);
+
+        for (int j = 0; j < number_of_processes; j++) {
+            Process process = *processes[j];
+            if (process.starting_time == i) {
+                enqueue(queue, process);
+            }
+        }
+        while (!isEmpty(queue))
+            printf("%s\n", dequeue(queue).name);
+//        char *process_id = isEmpty(queue) ? "idle" : current_process.name;
+//        char *message = current_process.remaining_time == 0 ? strcat(process_id, " aborts") : "";
+//        Process current_process = dequeue(queue);
+//        printf("%s\t", current_process.name);
+////        if (current_process.remaining_time != 0)
+////            current_process.remaining_time = current_process.remaining_time - 1;
+//        printf("%d %d\t", current_process.starting_time, current_process.remaining_time);
+//
+//        printf("%s (%d-->%d) %s\n", process_id, i, i + 1, message);
     }
 }
 
@@ -141,20 +176,21 @@ void RoundRobin(char *filename) {
  *
  */
 int main() {
-    char filename[261];
-    puts("Enter file name or Ctrl+Z to exit:");
-    puts("----------------------------------");
-    while (fgets(filename, 260, stdin) != NULL) {
-        filename[strlen(filename) - 1] = '\0';
-        if (fopen(filename, "r"))
-            RoundRobin(filename);
-        else {
-            puts("File Not Found!");
-            puts("----------------------------------");
-        }
-        puts("Enter file name or Ctrl+Z to exit:");
-        puts("----------------------------------");
-    }
+//    char filename[261];
+//    puts("Enter file name or Ctrl+Z to exit:");
+//    puts("----------------------------------");
+//    while (fgets(filename, 260, stdin) != NULL) {
+//        filename[strlen(filename) - 1] = '\0';
+//        if (fopen(filename, "r"))
+//            RoundRobin(filename);
+//        else {
+//            puts("File Not Found!");
+//            puts("----------------------------------");
+//        }
+//        puts("Enter file name or Ctrl+Z to exit:");
+//        puts("----------------------------------");
+//    }
+    RoundRobin("test.txt");
 
     return 0;
 }
