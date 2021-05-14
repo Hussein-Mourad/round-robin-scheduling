@@ -1,6 +1,11 @@
-watching time slots = 15
+watching time slots = 30
 P1 0 3
 P2 0 2
 P3 3 1
 P4 7 2
 P5 10 3
+P6 12 5
+P7 14 2
+P8 20 2
+P9 21 2
+P10 22 7
