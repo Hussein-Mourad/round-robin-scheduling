@@ -134,10 +134,8 @@ void RoundRobin(char *filename) {
     FILE *f = fopen(filename, "r");
     Queue *queue = init();
     int watch_time = getWatchTime(f);
-
     Process *processes[watch_time];
     char *s[watch_time];
-
     int number_of_processes = 0;
 
     while (!feof(f)) {
@@ -150,36 +148,39 @@ void RoundRobin(char *filename) {
         processes[number_of_processes++] = process;
     }
 
-    for (int i = 0; i < watch_time; i++) {
 
+    for (int i = 0; i < watch_time; i++) {
+        Process current_process;
+
+        // puts the processes in queue at appropriate time
         for (int j = 0; j < number_of_processes; j++) {
             Process process = *processes[j];
             if (process.starting_time == i) {
                 enqueue(queue, process);
-//                printf("%s\t%d\t%d\t", process.name, process.starting_time, process.remaining_time);
             }
         }
-        Process current_process;
-        char *process_id;
-        char *message = (char *) malloc(20 * sizeof(char));
-        if (isEmpty(queue)) {
-            process_id = "idle";
-        } else {
-            current_process = dequeue(queue);
-            process_id = current_process.name;
-        }
-        if (current_process.remaining_time != 0) {
-            current_process.remaining_time--;
-            enqueue(queue, current_process);
-        }
-        if (current_process.remaining_time == 0) {
-            sprintf(message, "%s aborts", process_id);
-            dequeue(queue);
-        }
 
-        printf("%s\t%d\t%d\t", current_process.name, current_process.starting_time, current_process.remaining_time);
-        printf("%s (%d-->%d) %s\n", process_id, i, i + 1, message);
+        current_process = dequeue(queue);
+
+        if (current_process.name)
+            current_process.remaining_time--;
+
+        if (current_process.name == NULL)
+            printf("idle\t");
+        else
+            printf("%s\t", current_process.name);
+
+        if (current_process.remaining_time != 0 && current_process.name)
+            enqueue(queue, current_process);
+
+        printf("(%d-->%d) ", i, i + 1);
+        if (current_process.remaining_time == 0)
+            printf("%s aborts", current_process.name);
+
+        printf("\n");
     }
+
+    destroy(queue);
     printf("stop\n");
 }
 
@@ -202,6 +203,17 @@ int main() {
 //        puts("----------------------------------");
 //    }
     RoundRobin("test.txt");
+//
+//    Queue *q = init();
+//    Process p1 = {"test", 1, 2};
+//    enqueue(q, p1);
+//    printf("isEmpty: %d\n", isEmpty(q));
+//    Process p = dequeue(q);
+//    printf("%s %d %d\n", p.name, p.starting_time, p.remaining_time);
+//    printf("isEmpty: %d\n", isEmpty(q));
+//    Process test = dequeue(q);
+//    printf("%s %d %d\n", test.name, test.starting_time, test.remaining_time);
+
 
     return 0;
 }
