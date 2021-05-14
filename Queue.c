@@ -156,23 +156,31 @@ void RoundRobin(char *filename) {
             Process process = *processes[j];
             if (process.starting_time == i) {
                 enqueue(queue, process);
+//                printf("%s\t%d\t%d\t", process.name, process.starting_time, process.remaining_time);
             }
         }
         Process current_process;
         char *process_id;
-        char *message = current_process.remaining_time == 0 ? strcat(process_id, " aborts") : "";
+        char *message = (char *) malloc(20 * sizeof(char));
         if (isEmpty(queue)) {
             process_id = "idle";
         } else {
             current_process = dequeue(queue);
             process_id = current_process.name;
         }
+        if (current_process.remaining_time != 0) {
+            current_process.remaining_time--;
+            enqueue(queue, current_process);
+        }
+        if (current_process.remaining_time == 0) {
+            sprintf(message, "%s aborts", process_id);
+            dequeue(queue);
+        }
 
-//        if (current_process.remaining_time != 0)
-//            current_process.remaining_time = current_process.remaining_time - 1;
-
+        printf("%s\t%d\t%d\t", current_process.name, current_process.starting_time, current_process.remaining_time);
         printf("%s (%d-->%d) %s\n", process_id, i, i + 1, message);
     }
+    printf("stop\n");
 }
 
 /*
