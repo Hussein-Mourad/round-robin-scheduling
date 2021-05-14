@@ -67,10 +67,10 @@ RM = /home/hussein/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/211.7142.21/bi
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/hussein/CLionProjects/round-robin-scheduling
+CMAKE_SOURCE_DIR = /mnt/d/CLionProjects/round-robin-scheduling
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/hussein/CLionProjects/round-robin-scheduling/cmake-build-debug
+CMAKE_BINARY_DIR = /mnt/d/CLionProjects/round-robin-scheduling/cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -99,9 +99,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/hussein/CLionProjects/round-robin-scheduling/cmake-build-debug/CMakeFiles /home/hussein/CLionProjects/round-robin-scheduling/cmake-build-debug//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/CLionProjects/round-robin-scheduling/cmake-build-debug/CMakeFiles /mnt/d/CLionProjects/round-robin-scheduling/cmake-build-debug//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/hussein/CLionProjects/round-robin-scheduling/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/CLionProjects/round-robin-scheduling/cmake-build-debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target

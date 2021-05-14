@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "/home/hussein/CLionProjects/round-robin-scheduling/Queue.c" "/home/hussein/CLionProjects/round-robin-scheduling/cmake-build-debug/CMakeFiles/round_robin_scheduling.dir/Queue.c.o"
+  "/mnt/d/CLionProjects/round-robin-scheduling/Queue.c" "/mnt/d/CLionProjects/round-robin-scheduling/cmake-build-debug/CMakeFiles/round_robin_scheduling.dir/Queue.c.o"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 

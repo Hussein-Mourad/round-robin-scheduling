@@ -6,9 +6,11 @@
 
 #IncludeRegexTransform: 
 
-/home/hussein/CLionProjects/round-robin-scheduling/Queue.c
+/mnt/d/CLionProjects/round-robin-scheduling/Queue.c
 stdio.h
 -
 stdlib.h
+-
+string.h
 -
 
